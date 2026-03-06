@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Header() {
   return (
-    <header className="h-14 bg-white/70 backdrop-blur-sm border-b border-slate-100 px-8 flex items-center justify-between sticky top-0 z-10 shrink-0">
+    <header className="h-17 bg-white backdrop-blur-sm border-b border-slate-100 px-8 flex items-center justify-between sticky top-0 z-10 shrink-0">
       {/* Título del viaje seleccionado */}
       <div>
         <h2 className="text-sm font-bold text-slate-900">
