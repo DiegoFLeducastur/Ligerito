@@ -135,6 +135,22 @@ const añadirCategoria = (nombreCat) => {
     ));
   };
 
+  // Añade esta función dentro de useMochilas.js y expórtala en el return
+const actualizarEnlaceItem = (idItem, nuevoEnlace) => {
+    setListas(prevListas => prevListas.map(l => {
+      // Buscamos la mochila que está activa actualmente
+      if (l.id === idListaActiva) {
+        return {
+          ...l,
+          objetos: l.objetos.map(obj => 
+            obj.id === idItem ? { ...obj, enlace: nuevoEnlace } : obj
+          )
+        };
+      }
+      return l;
+    }));
+  };
+
 return {
     listas,
     mochilaActiva,
@@ -148,7 +164,8 @@ return {
     manejarNuevoItem,
     cambiarCantidad,
     eliminarObjeto,
-    añadirCategoria,   // <--- Agrégala si no está
-    eliminarCategoria  // <--- Agrégala si no está
+    añadirCategoria,   
+    eliminarCategoria, 
+    actualizarEnlaceItem
   };
 };

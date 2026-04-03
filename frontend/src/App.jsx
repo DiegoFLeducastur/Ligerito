@@ -4,15 +4,16 @@ import Header from './components/Header';
 import ResumenPesos from './components/ResumenPesos';
 import ListaCategorias from './components/ListaCategorias';
 import Explorar from './pages/Explorar';
+import DetalleComunidad from './pages/DetalleComunidad'; 
 import Login from './pages/Login'; 
 import Registro from './pages/Registro';
 import { useMochilas } from './hooks/useMochilas';
 
 function App() {
   const [pantallaActual, setPantallaActual] = useState("principal");
+  const [mochilaSeleccionada, setMochilaSeleccionada] = useState(null);
 
-  // Extraemos todo del hook (incluyendo las nuevas de categorías)
-const {
+  const {
     listas,
     mochilaActiva,
     idListaActiva,
@@ -25,29 +26,52 @@ const {
     manejarNuevoItem,
     cambiarCantidad,
     eliminarObjeto,
-    añadirCategoria,    // <--- Viene del Hook
-    eliminarCategoria   // <--- Viene del Hook (Asegúrate de extraerla aquí)
+    añadirCategoria,
+    eliminarCategoria,
+    actualizarEnlaceItem // <--- AÑADIDO AQUÍ (Importante extraerlo del Hook)
   } = useMochilas();
 
+  // Gestión de sesión
   if (pantallaActual === "login") return <Login onLogin={() => setPantallaActual("principal")} onIrARegistro={() => setPantallaActual("registro")} />;
   if (pantallaActual === "registro") return <Registro onRegistro={() => setPantallaActual("principal")} onIrALogin={() => setPantallaActual("login")} />;
 
-  console.log(mochilaActiva)
   return (
     <div className="flex h-screen bg-white overflow-hidden text-slate-900 font-sans">
       <Sidebar 
         listas={listas} 
         idListaActiva={idListaActiva} 
-        onSeleccionarLista={(id) => { setIdListaActiva(id); setPantallaActual("principal"); }}
+        onSeleccionarLista={(id) => { 
+          setIdListaActiva(id); 
+          setPantallaActual("principal"); 
+        }}
         onCrearLista={crearNuevaLista} 
         onBorrarLista={borrarLista}
         inventario={inventarioGeneral} 
         onAñadirAlInventario={manejarNuevoItem}
       />
-      <div className="flex-1 flex flex-col overflow-y-auto">
-        {pantallaActual === "explorar" ? (
-          <Explorar onVolver={() => setPantallaActual("principal")} />
-        ) : (
+
+      <div className="flex-1 flex flex-col overflow-y-auto bg-slate-50">
+        {/* COMUNIDAD */}
+        {pantallaActual === "explorar" && (
+          <Explorar 
+            onVolver={() => setPantallaActual("principal")} 
+            onVerDetalle={(m) => {
+              setMochilaSeleccionada(m);
+              setPantallaActual("detalle-comunidad");
+            }}
+          />
+        )}
+
+        {/* DETALLE DE MOCHILA AJENA */}
+        {pantallaActual === "detalle-comunidad" && (
+          <DetalleComunidad 
+            mochila={mochilaSeleccionada} 
+            onVolver={() => setPantallaActual("explorar")} 
+          />
+        )}
+
+        {/* VISTA PRINCIPAL (Nuestra Mochila) */}
+        {pantallaActual === "principal" && (
           <>
             <Header 
               nombreMochila={mochilaActiva.nombre} 
@@ -58,7 +82,6 @@ const {
               onIrAExplorar={() => setPantallaActual("explorar")}
             />
             <main className="p-6 max-w-4xl mx-auto w-full">
-              {/* Ahora las categorías vienen de mochilaActiva, si borras la mochila, vienen vacías [] */}
               <ResumenPesos 
                 listaDeObjetos={mochilaActiva.objetos} 
                 categorias={mochilaActiva.categorias || []} 
@@ -71,6 +94,7 @@ const {
                 onCambiarCantidad={cambiarCantidad} 
                 onEliminar={eliminarObjeto} 
                 onNuevoItem={manejarNuevoItem} 
+                onActualizarEnlace={actualizarEnlaceItem} // <--- Pasamos la función al hijo
               />
             </main>
           </>
