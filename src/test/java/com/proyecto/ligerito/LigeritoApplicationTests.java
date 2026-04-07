@@ -1,4 +1,4 @@
-package com.proyecto.cfgs.ligerito;
+package com.proyecto.ligerito;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

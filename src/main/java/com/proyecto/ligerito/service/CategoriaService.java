@@ -1,4 +1,4 @@
-package com.proyecto.ligerito.repository;
+package com.proyecto.ligerito.service;
 
 public class CategoriaService {
     
