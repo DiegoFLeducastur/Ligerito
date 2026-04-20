@@ -1,45 +1,42 @@
 package com.proyecto.ligerito.model;
 
 import jakarta.persistence.*;
-
-//anti boilerplate (codigo repetitivo)
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
+import java.util.List;
 
-//evitar el bucle infinito que me salía en el navegador con los test
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-//Anotacion para que la clase sea una tabla
 @Entity
-//Nombre de la tabla en la base de datos
 @Table(name = "mochilas")
-//Genera getters,setters,toString, equals y hashcode
 @Data
-//el constructor sin argumentos que necesito para hibernate
 @NoArgsConstructor
-//el constructor con todos los argumentos que necesito para hibernate
 @AllArgsConstructor
 public class Mochila {
 
     @Id
-    //creo el id de manera incremental mirando el último creado
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
-    private String descripcion;
     private boolean esPublica;
-    private int pesoTotal;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
-    @JsonIgnoreProperties("mochilas")
     private Usuario usuario;
 
-    // Relación fundamental: Borrado en cascada de ítems
+    //orphanRemoval = true hace que si una categoría deja de pertenecer a esta mochila,
+    //se elimine también de la base de datos.
     @OneToMany(mappedBy = "mochila", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Item> items = new ArrayList<>();
+    // Evita problemas al convertir a JSON, como bucles infinitos entre Mochila y Categoria.
+    @JsonIgnore
+    private List<Categoria> categorias = new ArrayList<>();
+
+    //orphanRemoval borra los items si dejan de pertenecer a esta mochila
+    @OneToMany(mappedBy = "mochila", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ItemMochila> itemsMochila = new ArrayList<>();
 }

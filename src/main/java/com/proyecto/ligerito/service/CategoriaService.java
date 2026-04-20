@@ -1,4 +1,5 @@
 package com.proyecto.ligerito.service;
 
-public class MochilaService {
+public class CategoriaService {
+    
 }

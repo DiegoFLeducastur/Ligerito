@@ -1,5 +1,5 @@
 package com.proyecto.ligerito.controller;
 
-public class MochilaController {
-
+public class CategoriaController {
+    
 }

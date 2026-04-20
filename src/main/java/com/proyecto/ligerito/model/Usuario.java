@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore; // <--- ESTA ES LA CLAVE
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,15 +16,22 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String nick;
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "usuario")
-    @JsonIgnore // <--- Esto corta el bucle infinito
-    private List<Mochila> mochilas;
+    // Lista de mochilas del usuario
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Mochila> mochilas = new ArrayList<>();
+
+    // Lista de items del armario del usuario
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ItemArmario> itemsArmario = new ArrayList<>();
 }

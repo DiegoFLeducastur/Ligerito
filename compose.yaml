@@ -17,7 +17,7 @@ services:
   db:
     image: mysql:9.0
     container_name: backpack-db
-    restart: always
+    restart: on-failure
     environment:
       MYSQL_DATABASE: backpack_db
       MYSQL_ROOT_PASSWORD: root

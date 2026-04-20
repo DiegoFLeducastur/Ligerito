@@ -1,26 +1,27 @@
 package com.proyecto.ligerito.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
 
 @Entity
-@Table(name = "items")
+@Table(name = "items_armario")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class ItemArmario {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String nombre;
     private int peso;
-    private int cantidad;
+    private String descripcion;
+    private String enlace;
 
-    @ManyToOne
-    @JoinColumn(name = "mochila_id")
-    private Mochila mochila;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 }

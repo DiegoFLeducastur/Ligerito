@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
-export default function Signup({ onSignup }) {
-  const [nombre, setNombre] = useState("");
+export default function Registro({ onRegistro, onIrALogin }) {
+  const [nick, setNick] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (nombre && email && password) {
-      // Simulamos creación de usuario
+    if (nick && email && password) {
+      // Simulación temporal de registro
       onRegistro?.();
     }
   };
@@ -22,27 +22,33 @@ export default function Signup({ onSignup }) {
             <span className="material-symbols-outlined text-4xl">person_add</span>
           </div>
           <h1 className="text-3xl font-bold tracking-tighter">Únete a Ligerito</h1>
-          <p className="text-slate-400 text-sm mt-2 text-center">Empieza a organizar tus aventuras sin peso extra</p>
+          <p className="text-slate-400 text-sm mt-2 text-center">
+            Empieza a organizar tus aventuras sin peso extra
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* NOMBRE */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Nombre Completo</label>
-            <input 
-              type="text" required
+            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+              Nick
+            </label>
+            <input
+              type="text"
+              required
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-slate-400 transition-all"
               placeholder="Diego G."
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
+              value={nick}
+              onChange={(e) => setNick(e.target.value)}
             />
           </div>
 
-          {/* EMAIL */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Email</label>
-            <input 
-              type="email" required
+            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+              Email
+            </label>
+            <input
+              type="email"
+              required
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-slate-400 transition-all"
               placeholder="tu@email.com"
               value={email}
@@ -50,11 +56,13 @@ export default function Signup({ onSignup }) {
             />
           </div>
 
-          {/* PASSWORD */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Contraseña</label>
-            <input 
-              type="password" required
+            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              required
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-slate-400 transition-all"
               placeholder="••••••••"
               value={password}
@@ -62,7 +70,7 @@ export default function Signup({ onSignup }) {
             />
           </div>
 
-          <button 
+          <button
             type="submit"
             className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl shadow-lg transition-all transform active:scale-[0.98] cursor-pointer"
           >
@@ -72,7 +80,13 @@ export default function Signup({ onSignup }) {
 
         <div className="mt-8 text-center">
           <p className="text-xs text-slate-400">
-            ¿Ya tienes cuenta? <span className="text-blue-500 font-bold cursor-pointer hover:underline">Inicia sesión</span>
+            ¿Ya tienes cuenta?{" "}
+            <span
+              onClick={onIrALogin}
+              className="text-blue-500 font-bold cursor-pointer hover:underline"
+            >
+              Inicia sesión
+            </span>
           </p>
         </div>
       </div>
