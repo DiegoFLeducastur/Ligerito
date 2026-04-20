@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
 export default function Registro({ onRegistro, onIrALogin }) {
-  const [nombre, setNombre] = useState("");
+  const [nick, setNick] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (nombre && email && password) {
+    if (nick && email && password) {
       // Simulación temporal de registro
       onRegistro?.();
     }
@@ -30,15 +30,15 @@ export default function Registro({ onRegistro, onIrALogin }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
-              Nombre Completo
+              Nick
             </label>
             <input
               type="text"
               required
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-slate-400 transition-all"
               placeholder="Diego G."
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
+              value={nick}
+              onChange={(e) => setNick(e.target.value)}
             />
           </div>
 
