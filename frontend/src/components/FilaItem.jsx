@@ -7,18 +7,18 @@ export default function FilaItem({
   onEliminar,
   onAbrirEnlace,
   onActualizarPeso,
-  onActualizarDesc, // ✅ NUEVO
+  onActualizarDescripcion,
 }) {
   const [draftPeso, setDraftPeso] = useState(String(item.peso ?? ""));
-  const [draftDesc, setDraftDesc] = useState(item.desc ?? ""); // ✅ NUEVO
+  const [draftDescripcion, setDraftDescripcion] = useState(item.descripcion ?? ""); 
 
   useEffect(() => {
     setDraftPeso(String(item.peso ?? ""));
   }, [item.peso]);
 
   useEffect(() => {
-    setDraftDesc(item.desc ?? "");
-  }, [item.desc]);
+    setDraftDescripcion(item.descripcion ?? "");
+  }, [item.descripcion]);
 
   const commitPeso = () => {
     if (esLectura) return;
@@ -32,10 +32,10 @@ export default function FilaItem({
     onActualizarPeso(item.id, n);
   };
 
-  const commitDesc = () => {
+  const commitDescripcion = () => {
     if (esLectura) return;
-    if (!onActualizarDesc) return;
-    onActualizarDesc(item.id, draftDesc);
+    if (!onActualizarDescripcion) return;
+    onActualizarDescripcion(item.id, draftDescripcion);
   };
 
   return (
@@ -77,22 +77,22 @@ export default function FilaItem({
 
         {/* DESCRIPCIÓN */}
         {esLectura ? (
-          item.desc && (
+          item.descripcion && (
             <p className="text-[10px] text-slate-400 italic truncate mt-0.5">
-              {item.desc}
+              {item.descripcion}
             </p>
           )
         ) : (
           <input
             className="mt-0.5 w-full text-[10px] text-slate-500 italic bg-transparent outline-none border-b border-transparent focus:border-blue-300"
             placeholder="Añade una descripción..."
-            value={draftDesc}
-            onChange={(e) => setDraftDesc(e.target.value)}
-            onBlur={commitDesc}
+            value={draftDescripcion}
+            onChange={(e) => setDraftDescripcion(e.target.value)}
+            onBlur={commitDescripcion}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                commitDesc();
+                commitDescripcion();
                 e.currentTarget.blur();
               }
             }}

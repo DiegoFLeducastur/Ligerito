@@ -26,7 +26,7 @@ function App() {
       const response = await fetch("http://localhost:8080/api/armario");
 
       if (!response.ok) {
-        setError("Error al cargar los datos del armario");
+        setErrorArmario("Error al cargar los datos del armario");
         return;
       }
 
@@ -35,14 +35,14 @@ function App() {
       setArmarioBackend(data);
     } catch (err) {
       console.error(err);
-      setError("No se pudo conectar con el servidor");
+      setErrorArmario("No se pudo conectar con el servidor");
     } finally {
       setLoadingArmario(false);
     }
   };
 
   const {
-    actualizarDescItem,
+    actualizarDescripcionItem,
     listas,
     mochilaActiva,
     idListaActiva,
@@ -73,6 +73,7 @@ function App() {
       );
     }
 
+
     return (
       <Login
         onLogin={(usuario) => {
@@ -96,7 +97,7 @@ function App() {
         }}
         onCrearLista={crearNuevaLista}
         onBorrarLista={borrarLista}
-        inventario={inventarioGeneral}
+        inventario={armarioBackend}
         onAñadirAlInventario={manejarNuevoItem}
         onEliminarDelInventario={eliminarItemInventario}
       />
@@ -135,42 +136,7 @@ function App() {
               }}
               onIrAExplorar={() => setPantallaActual("explorar")}
             />
-            <section className="mb-6 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-  <h2 className="text-lg font-bold text-slate-800 mb-3">
-    Armario real (backend)
-  </h2>
-
-  {loadingArmario && (
-    <p className="text-sm text-slate-500">Cargando armario...</p>
-  )}
-
-  {errorArmario && (
-    <p className="text-sm text-red-600">{errorArmario}</p>
-  )}
-
-  {!loadingArmario && !errorArmario && armarioBackend.length === 0 && (
-    <p className="text-sm text-slate-500">El armario está vacío.</p>
-  )}
-
-  {!loadingArmario && !errorArmario && armarioBackend.length > 0 && (
-    <ul className="space-y-2">
-      {armarioBackend.map((item) => (
-        <li
-          key={item.id}
-          className="border border-slate-100 rounded-xl px-3 py-2 bg-slate-50"
-        >
-          <div className="font-medium text-slate-800">{item.nombre}</div>
-          <div className="text-sm text-slate-500">
-            {item.peso} g
-          </div>
-          {item.descripcion && (
-            <div className="text-sm text-slate-600">{item.descripcion}</div>
-          )}
-        </li>
-      ))}
-    </ul>
-  )}
-</section>
+            
             <main className="p-6 max-w-4xl mx-auto w-full">
               <ResumenPesos
                 listaDeObjetos={mochilaActiva.objetos}
@@ -186,7 +152,7 @@ function App() {
                 onNuevoItem={manejarNuevoItem}
                 onActualizarEnlace={actualizarEnlaceItem} // <--- Pasamos la función al hijo
                 onActualizarPeso={actualizarPesoItem}
-                onActualizarDesc={actualizarDescItem}
+                onActualizarDescripcion={actualizarDescripcionItem}
               />
             </main>
           </>

@@ -144,9 +144,9 @@ export default function Sidebar({
                         {obj.peso}g
                       </span>
                     </div>
-                    {obj.desc && (
+                    {obj.descripcion && (
                       <p className="text-[11px] text-slate-400 italic truncate leading-none mt-0.5">
-                        {obj.desc}
+                        {obj.descripcion}
                       </p>
                     )}
                   </div>

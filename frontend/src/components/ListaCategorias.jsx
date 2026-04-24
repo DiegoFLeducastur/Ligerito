@@ -10,12 +10,12 @@ export default function ListaCategorias({
   onNuevoItem,
   onActualizarEnlace, 
   onActualizarPeso, 
-  onActualizarDesc
+  onActualizarDescripcion
 }) {
   const [catEditando, setCatEditando] = useState(null);
   const [nuevaCatNombre, setNuevaCatNombre] = useState("");
   const [mostrandoNuevaCat, setMostrandoNuevaCat] = useState(false);
-  const [nuevoItem, setNuevoItem] = useState({ nombre: '', desc: '', peso: '' });
+  const [nuevoItem, setNuevoItem] = useState({ nombre: '', descripcion: '', peso: '' });
   
   // ESTADOS PARA EL MODAL DE ENLACE
   const [itemEditandoEnlace, setItemEditandoEnlace] = useState(null);
@@ -26,10 +26,10 @@ export default function ListaCategorias({
     onNuevoItem({
       nombre: nuevoItem.nombre,
       peso: parseInt(nuevoItem.peso),
-      desc: nuevoItem.desc,
+      descripcion: nuevoItem.descripcion,
       categoria: categoria
     });
-    setNuevoItem({ nombre: '', desc: '', peso: '' });
+    setNuevoItem({ nombre: '', descripcion: '', peso: '' });
     setCatEditando(null);
   };
 
@@ -77,7 +77,7 @@ export default function ListaCategorias({
                     setTempEnlace(it.enlace || "");
                   }}
                   onActualizarPeso={onActualizarPeso}
-                  onActualizarDesc={onActualizarDesc}
+                  onActualizarDescripcion={onActualizarDescripcion}
                 />
               ))}
               
@@ -104,8 +104,8 @@ export default function ListaCategorias({
                     <input 
                       placeholder="Descripción opcional..." 
                       className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-[10px] italic outline-none focus:border-blue-400 shadow-sm" 
-                      value={nuevoItem.desc} 
-                      onChange={(e) => setNuevoItem({ ...nuevoItem, desc: e.target.value })}
+                      value={nuevoItem.descripcion} 
+                      onChange={(e) => setNuevoItem({ ...nuevoItem, descripcion: e.target.value })}
                       onKeyDown={(e) => manejarKeyPress(e, cat)} 
                     />
                     <button 

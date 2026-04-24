@@ -241,8 +241,8 @@ const eliminarItemInventario = (idArmario) => {
     );
   };
 
-  const actualizarDescItem = (idItem, nuevaDesc) => {
-  const desc = (nuevaDesc ?? "").toString();
+  const actualizarDescripcionItem = (idItem, nuevaDescripcion) => {
+  const descripcion = (nuevaDescripcion ?? "").toString();
 
   // 1) Actualiza en la mochila activa
   setListas((prev) =>
@@ -251,7 +251,7 @@ const eliminarItemInventario = (idArmario) => {
       return {
         ...l,
         objetos: l.objetos.map((obj) =>
-          obj.id === idItem ? { ...obj, desc } : obj
+          obj.id === idItem ? { ...obj, descripcion } : obj
         ),
       };
     })
@@ -264,13 +264,13 @@ const eliminarItemInventario = (idArmario) => {
 
   setInventarioGeneral((prevInv) =>
     prevInv.map((i) =>
-      i.nombre.toLowerCase().trim() === nombreKey ? { ...i, desc } : i
+      i.nombre.toLowerCase().trim() === nombreKey ? { ...i, descripcion } : i
     )
   );
 };
 
   return {
-    actualizarDescItem,
+    actualizarDescripcionItem,
     actualizarEnlaceItem,
     actualizarNombreLista,
     actualizarPesoItem,
