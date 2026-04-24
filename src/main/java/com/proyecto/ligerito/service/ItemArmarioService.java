@@ -2,7 +2,9 @@ package com.proyecto.ligerito.service;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.proyecto.ligerito.dto.ItemArmarioResponse;
 import com.proyecto.ligerito.model.ItemArmario;
@@ -29,4 +31,15 @@ public class ItemArmarioService {
                         item.getEnlace()))
                 .toList();
     }
+
+    public void eliminarPorId(Long id) {
+        if (!itemArmarioRepository.existsById(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Item de armario no encontrado");
+        }
+
+        itemArmarioRepository.deleteById(id);
+    }
+
 }

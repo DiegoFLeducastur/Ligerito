@@ -41,6 +41,25 @@ function App() {
     }
   };
 
+  const eliminarItemArmarioBackend = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/armario/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("No se pudo eliminar el item del armario");
+      }
+
+      setArmarioBackend((prev) => prev.filter((item) => item.id !== id));
+
+      eliminarItemInventario(id);
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo eliminar el item del armario en el servidor");
+    }
+  };
+
   const {
     actualizarDescripcionItem,
     listas,
@@ -73,7 +92,6 @@ function App() {
       );
     }
 
-
     return (
       <Login
         onLogin={(usuario) => {
@@ -99,7 +117,7 @@ function App() {
         onBorrarLista={borrarLista}
         inventario={armarioBackend}
         onAñadirAlInventario={manejarNuevoItem}
-        onEliminarDelInventario={eliminarItemInventario}
+        onEliminarDelInventario={eliminarItemArmarioBackend}
       />
 
       <div className="flex-1 flex flex-col overflow-y-auto bg-slate-50">
@@ -136,7 +154,7 @@ function App() {
               }}
               onIrAExplorar={() => setPantallaActual("explorar")}
             />
-            
+
             <main className="p-6 max-w-4xl mx-auto w-full">
               <ResumenPesos
                 listaDeObjetos={mochilaActiva.objetos}
