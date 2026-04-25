@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
+import com.proyecto.ligerito.dto.ItemArmarioCreateRequest;
 import com.proyecto.ligerito.dto.ItemArmarioPatchRequest;
 import com.proyecto.ligerito.dto.ItemArmarioResponse;
 import com.proyecto.ligerito.service.ItemArmarioService;
@@ -21,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/armario")
@@ -55,5 +58,12 @@ public class ItemArmarioController {
             @PathVariable Long id,
             @RequestBody ItemArmarioPatchRequest request) {
         return itemArmarioService.actualizarParcial(id, request);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemArmarioResponse crearItemArmario(
+            @Valid @RequestBody ItemArmarioCreateRequest request) {
+        return itemArmarioService.crearItemArmario(request);
     }
 }

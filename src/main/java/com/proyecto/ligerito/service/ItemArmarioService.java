@@ -6,18 +6,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.proyecto.ligerito.dto.ItemArmarioCreateRequest;
 import com.proyecto.ligerito.dto.ItemArmarioPatchRequest;
 import com.proyecto.ligerito.dto.ItemArmarioResponse;
 import com.proyecto.ligerito.model.ItemArmario;
+import com.proyecto.ligerito.model.Usuario;
 import com.proyecto.ligerito.repository.ItemArmarioRepository;
+import com.proyecto.ligerito.repository.UsuarioRepository;
 
 @Service
 public class ItemArmarioService {
 
     private final ItemArmarioRepository itemArmarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public ItemArmarioService(ItemArmarioRepository itemArmarioRepository) {
+    public ItemArmarioService(ItemArmarioRepository itemArmarioRepository, UsuarioRepository usuarioRepository) {
         this.itemArmarioRepository = itemArmarioRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public List<ItemArmarioResponse> listarTodos() {
@@ -66,6 +71,30 @@ public class ItemArmarioService {
         }
 
         ItemArmario guardado = itemArmarioRepository.save(item);
+
+        return new ItemArmarioResponse(
+                guardado.getId(),
+                guardado.getNombre(),
+                guardado.getPeso(),
+                guardado.getDescripcion(),
+                guardado.getEnlace());
+    }
+
+    public ItemArmarioResponse crearItemArmario(ItemArmarioCreateRequest request) {
+        Usuario usuario = usuarioRepository.findById(request.getUsuarioId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Usuario no encontrado"));
+
+        ItemArmario nuevoItem = new ItemArmario(
+                null,
+                request.getNombre(),
+                request.getPeso(),
+                request.getDescripcion(),
+                request.getEnlace(),
+                usuario);
+
+        ItemArmario guardado = itemArmarioRepository.save(nuevoItem);
 
         return new ItemArmarioResponse(
                 guardado.getId(),
