@@ -123,6 +123,7 @@ export default function Landing({ onIrLogin, onIrRegistro }) {
                 title="Peso por categorías"
                 text="Visualiza el peso total y el reparto entre ropa, cocina, descanso, electrónica y más."
                 image="/Peso.PNG"
+                imageClassName="max-w-full max-h-full object-contain scale-170 translate-x-26"
               />
               <FeatureCard
                 icon="public"
@@ -220,7 +221,7 @@ export default function Landing({ onIrLogin, onIrRegistro }) {
   );
 }
 
-function FeatureCard({ icon, title, text, image }) {
+function FeatureCard({ icon, title, text, image, imageClassName }) {
   return (
     <div className="p-10 rounded-xl border border-slate-200 bg-white hover:border-blue-900/50 transition-colors group min-h-[520px]">
       <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
@@ -238,7 +239,10 @@ function FeatureCard({ icon, title, text, image }) {
           <img
             src={image}
             alt={title}
-            className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
+            className={
+              imageClassName ??
+              "max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
+            }
           />
         </div>
       )}
