@@ -7,10 +7,15 @@ import Explorar from "./pages/Explorar";
 import DetalleComunidad from "./pages/DetalleComunidad";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
-import Landing from "./pages/Landing"
+import Landing from "./pages/Landing";
 import { useMochilas } from "./hooks/useMochilas";
 import { useArmario } from "./hooks/useArmario";
 import { useMochilasBackend } from "./hooks/useMochilasBackend";
+import {
+  getCategorias,
+  createCategoria as createCategoriaApi,
+  deleteCategoria as deleteCategoriaApi,
+} from "./services/apiCategorias";
 
 function App() {
   const [pantallaActual, setPantallaActual] = useState("landing");
@@ -68,6 +73,16 @@ function App() {
     }
   };
 
+  const borrarListaReal = async (id) => {
+    try {
+      await eliminarMochilaBackend(id);
+      borrarLista(id);
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo borrar la mochila");
+    }
+  };
+
   const {
     actualizarDescripcionItem,
     listas,
@@ -90,6 +105,63 @@ function App() {
     agregarListaPersistida,
   } = useMochilas(cargarArmario);
 
+  const cargarMochilasConCategorias = async (usuarioId) => {
+    const mochilas = await cargarMochilasBackend(usuarioId);
+
+    const mochilasConCategorias = await Promise.all(
+      mochilas.map(async (mochila) => {
+        const categoriasResponse = await getCategorias(mochila.id);
+
+        return {
+          ...mochila,
+          categorias: categoriasResponse.map((c) => c.nombre),
+        };
+      }),
+    );
+
+    hidratarListasDesdeBackend(mochilasConCategorias);
+  };
+
+  const añadirCategoriaReal = async (nombreCat) => {
+    if (!idListaActiva) return;
+
+    try {
+      await createCategoriaApi({
+        nombre: nombreCat,
+        mochilaId: idListaActiva,
+      });
+
+      añadirCategoria(nombreCat);
+      await cargarMochilasConCategorias(usuarioActual.id);
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo crear la categoría");
+    }
+  };
+
+  const eliminarCategoriaReal = async (nombreCat) => {
+    if (!idListaActiva) return;
+
+    try {
+      const categoriasBackend = await getCategorias(idListaActiva);
+
+      const categoria = categoriasBackend.find((c) => c.nombre === nombreCat);
+
+      if (!categoria) {
+        alert("No se encontró la categoría en el servidor");
+        return;
+      }
+
+      await deleteCategoriaApi(categoria.id);
+
+      eliminarCategoria(nombreCat);
+      await cargarMochilasConCategorias(usuarioActual.id);
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo eliminar la categoría");
+    }
+  };
+
   const crearNuevaListaReal = async (nombre) => {
     try {
       const creada = await crearMochilaBackend({
@@ -97,25 +169,20 @@ function App() {
         esPublica: false,
         usuarioId: usuarioActual.id,
       });
-      agregarListaPersistida(creada);
+
+      agregarListaPersistida({
+        ...creada,
+        categorias: [],
+      });
     } catch (error) {
       console.error(error);
       alert("No se pudo crear la mochila");
     }
   };
 
-  const borrarListaReal = async (id) => {
-    try {
-      await eliminarMochilaBackend(id);
-      borrarLista(id);
-    } catch (error) {
-      console.error(error);
-      alert("No se pudo borrar la mochila");
-    }
-  };
-
   const actualizarNombreListaReal = async (nuevoNombre) => {
     if (!idListaActiva) return;
+
     try {
       await actualizarMochilaBackend(idListaActiva, { nombre: nuevoNombre });
       actualizarNombreLista(nuevoNombre);
@@ -127,6 +194,7 @@ function App() {
 
   const togglePublicaReal = async () => {
     if (!idListaActiva) return;
+
     try {
       await actualizarMochilaBackend(idListaActiva, {
         esPublica: !mochilaActiva.publica,
@@ -163,8 +231,7 @@ function App() {
         onLogin={async (usuario) => {
           setUsuarioActual(usuario);
           await cargarArmario();
-          const mochilas = await cargarMochilasBackend(usuario.id);
-          hidratarListasDesdeBackend(mochilas);
+          await cargarMochilasConCategorias(usuario.id);
           setPantallaActual("principal");
         }}
         onIrARegistro={() => setPantallaActual("registro")}
@@ -231,8 +298,8 @@ function App() {
               <ListaCategorias
                 listaDeObjetos={mochilaActiva.objetos}
                 categorias={mochilaActiva.categorias || []}
-                onAñadirCategoria={añadirCategoria}
-                onEliminarCategoria={eliminarCategoria}
+                onAñadirCategoria={añadirCategoriaReal}
+                onEliminarCategoria={eliminarCategoriaReal}
                 onCambiarCantidad={cambiarCantidad}
                 onEliminar={eliminarObjeto}
                 onNuevoItem={manejarNuevoItemReal}

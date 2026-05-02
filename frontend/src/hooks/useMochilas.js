@@ -64,209 +64,213 @@ export const useMochilas = (onArmarioActualizado) => {
     );
   };
 
-  const hidratarListasDesdeBackend = (mochilasBackend) => {
-  setListas((prev) =>
-    mochilasBackend.map((m) => {
-      const existente = prev.find((l) => String(l.id) === String(m.id));
-
-      return {
-        id: m.id,
-        nombre: m.nombre,
-        publica: m.esPublica,
-        objetos: existente?.objetos ?? [],
-        categorias: existente?.categorias ?? [],
-      };
-    })
-  );
-
-  setIdListaActiva((prevId) => {
-    const sigueExistiendo = mochilasBackend.some(
-      (m) => String(m.id) === String(prevId)
-    );
-    if (sigueExistiendo) return prevId;
-    return mochilasBackend.length > 0 ? mochilasBackend[0].id : null;
-  });
-};
-
-const agregarListaPersistida = (mochilaBackend) => {
-  const nueva = {
-    id: mochilaBackend.id,
-    nombre: mochilaBackend.nombre,
-    publica: mochilaBackend.esPublica,
-    objetos: [],
-    categorias: [],
-  };
-
-  setListas((prev) => [...prev, nueva]);
-  setIdListaActiva(nueva.id);
-};
-
-  // --- listas/mochilas ---
-
-  const crearNuevaLista = (nombre) => {
+  const agregarListaPersistida = (mochilaBackend) => {
     const nueva = {
-      id: uid(),
-      nombre,
+      id: mochilaBackend.id,
+      nombre: mochilaBackend.nombre,
+      publica: mochilaBackend.esPublica,
       objetos: [],
       categorias: [],
-      publica: false,
     };
 
     setListas((prev) => [...prev, nueva]);
     setIdListaActiva(nueva.id);
   };
 
-  const borrarLista = (id) => {
-    setListas((prev) => {
-      const filtradas = prev.filter((l) => l.id !== id);
-      if (id === idListaActiva) {
-        setIdListaActiva(filtradas.length > 0 ? filtradas[0].id : null);
-      }
-      return filtradas;
-    });
-  };
-
-  const actualizarNombreLista = (nuevoNombre) => {
+  const hidratarListasDesdeBackend = (mochilasBackend) => {
     setListas((prev) =>
-      prev.map((l) =>
-        l.id === idListaActiva ? { ...l, nombre: nuevoNombre } : l,
-      ),
-    );
-  };
+      mochilasBackend.map((m) => {
+        const existente = prev.find((l) => String(l.id) === String(m.id));
 
-  const togglePublica = () => {
-    setListas((prev) =>
-      prev.map((l) =>
-        l.id === idListaActiva ? { ...l, publica: !l.publica } : l,
-      ),
-    );
-  };
-
-  // --- items de mochila ---
-
-  const manejarNuevoItem = (datos) => {
-    if (!idListaActiva) return;
-
-    // 1) Añadir/incrementar en mochila activa
-    setListas((prevListas) =>
-      prevListas.map((l) => {
-        if (l.id !== idListaActiva) return l;
-
-        const existe = l.objetos.some(
-          (obj) =>
-            mismoItemBase(obj, datos) && obj.categoria === datos.categoria,
-        );
-
-        if (existe) {
-          return {
-            ...l,
-            objetos: l.objetos.map((obj) =>
-              mismoItemBase(obj, datos) && obj.categoria === datos.categoria
-                ? { ...obj, cant: obj.cant + 1 }
-                : obj,
-            ),
-          };
-        }
-
-        const nuevo = {
-          ...datos,
-          itemArmarioId: datos.itemArmarioId ?? datos.id ?? null,
-          id: uid(),
-          cant: 1,
+        return {
+          id: m.id,
+          nombre: m.nombre,
+          publica: m.esPublica,
+          categorias: m.categorias ?? [],
+          objetos: existente?.objetos ?? [],
         };
-        return { ...l, objetos: [...l.objetos, nuevo] };
       }),
     );
 
-    // 2) Añadir al armario si no existe (por nombre)
-    setInventarioGeneral((prevInv) => {
-      const yaExiste = prevInv.some((i) => mismoItemBase(i, datos));
-      if (yaExiste) return prevInv;
+    setIdListaActiva((prevId) => {
+      const sigueExistiendo = mochilasBackend.some(
+        (m) => String(m.id) === String(prevId),
+      );
 
-      return [
-        ...prevInv,
-        {
-          ...datos,
-          id: obtenerItemArmarioId(datos) ?? uid(),
-          itemArmarioId: obtenerItemArmarioId(datos),
-        },
-      ];
+      if (sigueExistiendo) return prevId;
+      return mochilasBackend.length > 0 ? mochilasBackend[0].id : null;
     });
   };
 
-  const cambiarCantidad = (id, incremento) => {
-    setListas((prev) =>
-      prev.map((l) => {
-        if (l.id !== idListaActiva) return l;
-        const nuevos = l.objetos
-          .map((o) => (o.id === id ? { ...o, cant: o.cant + incremento } : o))
-          .filter((o) => o.cant > 0);
-        return { ...l, objetos: nuevos };
-      }),
-    );
-  };
+  // --- listas/mochilas ---
 
-  const eliminarObjeto = (id) => {
-    setListas((prev) =>
-      prev.map((l) =>
-        l.id === idListaActiva
-          ? { ...l, objetos: l.objetos.filter((o) => o.id !== id) }
-          : l,
-      ),
-    );
-  };
+  const crearNuevaLista = (nombre) => {
+      const nueva = {
+        id: uid(),
+        nombre,
+        objetos: [],
+        categorias: [],
+        publica: false,
+      };
 
-  // --- armario ---
+      setListas((prev) => [...prev, nueva]);
+      setIdListaActiva(nueva.id);
+    };
 
-  const eliminarItemInventario = (idArmario) => {
-    const item = inventarioGeneral.find((i) => i.id === idArmario);
-    const nombreKey = (item?.nombre ?? "").toLowerCase().trim();
+    const borrarLista = (id) => {
+      setListas((prev) => {
+        const filtradas = prev.filter((l) => l.id !== id);
+        if (id === idListaActiva) {
+          setIdListaActiva(filtradas.length > 0 ? filtradas[0].id : null);
+        }
+        return filtradas;
+      });
+    };
 
-    setInventarioGeneral((prev) => prev.filter((i) => i.id !== idArmario));
+    const actualizarNombreLista = (nuevoNombre) => {
+      setListas((prev) =>
+        prev.map((l) =>
+          l.id === idListaActiva ? { ...l, nombre: nuevoNombre } : l,
+        ),
+      );
+    };
 
-    setListas((prev) =>
-      prev.map((l) => ({
-        ...l,
-        objetos: l.objetos.filter((o) => {
-          if (o.itemArmarioId) {
-            return o.itemArmarioId !== idArmario;
+    const togglePublica = () => {
+      setListas((prev) =>
+        prev.map((l) =>
+          l.id === idListaActiva ? { ...l, publica: !l.publica } : l,
+        ),
+      );
+    };
+
+    // --- items de mochila ---
+
+    const manejarNuevoItem = (datos) => {
+      if (!idListaActiva) return;
+
+      // 1) Añadir/incrementar en mochila activa
+      setListas((prevListas) =>
+        prevListas.map((l) => {
+          if (l.id !== idListaActiva) return l;
+
+          const existe = l.objetos.some(
+            (obj) =>
+              mismoItemBase(obj, datos) && obj.categoria === datos.categoria,
+          );
+
+          if (existe) {
+            return {
+              ...l,
+              objetos: l.objetos.map((obj) =>
+                mismoItemBase(obj, datos) && obj.categoria === datos.categoria
+                  ? { ...obj, cant: obj.cant + 1 }
+                  : obj,
+              ),
+            };
           }
 
-          return (o.nombre ?? "").toLowerCase().trim() !== nombreKey;
+          const nuevo = {
+            ...datos,
+            itemArmarioId: datos.itemArmarioId ?? datos.id ?? null,
+            id: uid(),
+            cant: 1,
+          };
+          return { ...l, objetos: [...l.objetos, nuevo] };
         }),
-      })),
-    );
-  };
+      );
 
-  // --- categorías ---
+      // 2) Añadir al armario si no existe (por nombre)
+      setInventarioGeneral((prevInv) => {
+        const yaExiste = prevInv.some((i) => mismoItemBase(i, datos));
+        if (yaExiste) return prevInv;
 
-  const añadirCategoria = (nombreCat) => {
-    if (!idListaActiva) return;
+        return [
+          ...prevInv,
+          {
+            ...datos,
+            id: obtenerItemArmarioId(datos) ?? uid(),
+            itemArmarioId: obtenerItemArmarioId(datos),
+          },
+        ];
+      });
+    };
 
-    setListas((prev) =>
-      prev.map((l) => {
-        if (l.id !== idListaActiva) return l;
-        const cats = l.categorias || [];
-        if (cats.includes(nombreCat)) return l;
-        return { ...l, categorias: [...cats, nombreCat] };
-      }),
-    );
-  };
+    const cambiarCantidad = (id, incremento) => {
+      setListas((prev) =>
+        prev.map((l) => {
+          if (l.id !== idListaActiva) return l;
+          const nuevos = l.objetos
+            .map((o) => (o.id === id ? { ...o, cant: o.cant + incremento } : o))
+            .filter((o) => o.cant > 0);
+          return { ...l, objetos: nuevos };
+        }),
+      );
+    };
 
-  const eliminarCategoria = (nombre) => {
-    if (!idListaActiva) return;
+    const eliminarObjeto = (id) => {
+      setListas((prev) =>
+        prev.map((l) =>
+          l.id === idListaActiva
+            ? { ...l, objetos: l.objetos.filter((o) => o.id !== id) }
+            : l,
+        ),
+      );
+    };
 
-    setListas((prev) =>
-      prev.map((l) =>
-        l.id === idListaActiva
-          ? {
-              ...l,
-              categorias: (l.categorias || []).filter((c) => c !== nombre),
+    // --- armario ---
+
+    const eliminarItemInventario = (idArmario) => {
+      const item = inventarioGeneral.find((i) => i.id === idArmario);
+      const nombreKey = (item?.nombre ?? "").toLowerCase().trim();
+
+      setInventarioGeneral((prev) => prev.filter((i) => i.id !== idArmario));
+
+      setListas((prev) =>
+        prev.map((l) => ({
+          ...l,
+          objetos: l.objetos.filter((o) => {
+            if (o.itemArmarioId) {
+              return o.itemArmarioId !== idArmario;
             }
-          : l,
-      ),
-    );
-  };
+
+            return (o.nombre ?? "").toLowerCase().trim() !== nombreKey;
+          }),
+        })),
+      );
+    };
+
+    // --- categorías ---
+
+    const añadirCategoria = (nombreCat) => {
+      if (!idListaActiva) return;
+
+      setListas((prev) =>
+        prev.map((l) => {
+          if (l.id !== idListaActiva) return l;
+          const cats = l.categorias || [];
+          if (cats.includes(nombreCat)) return l;
+          return { ...l, categorias: [...cats, nombreCat] };
+        }),
+      );
+    };
+
+    const eliminarCategoria = (nombre) => {
+      if (!idListaActiva) return;
+
+      setListas((prev) =>
+        prev.map((l) =>
+          l.id === idListaActiva
+            ? {
+                ...l,
+                categorias: (l.categorias || []).filter((c) => c !== nombre),
+                objetos: (l.objetos || []).filter(
+                  (o) => o.categoria !== nombre,
+                ),
+              }
+            : l,
+        ),
+      );
+    };
 
   // --- edición global de item ---
 
@@ -305,7 +309,9 @@ const agregarListaPersistida = (mochilaBackend) => {
 
     setInventarioGeneral((prevInv) =>
       prevInv.map((i) =>
-        i.nombre.toLowerCase().trim() === nombreKey ? { ...i, [campo]: valor } : i,
+        i.nombre.toLowerCase().trim() === nombreKey
+          ? { ...i, [campo]: valor }
+          : i,
       ),
     );
   };
@@ -317,7 +323,11 @@ const agregarListaPersistida = (mochilaBackend) => {
   };
 
   const actualizarDescripcionItem = (idItem, nuevaDescripcion) =>
-    actualizarCampoItem(idItem, "descripcion", (nuevaDescripcion ?? "").toString());
+    actualizarCampoItem(
+      idItem,
+      "descripcion",
+      (nuevaDescripcion ?? "").toString(),
+    );
 
   const actualizarEnlaceItem = (idItem, nuevoEnlace) =>
     actualizarCampoItem(idItem, "enlace", (nuevoEnlace ?? "").toString());
@@ -342,6 +352,6 @@ const agregarListaPersistida = (mochilaBackend) => {
     setIdListaActiva,
     togglePublica,
     agregarListaPersistida,
-    hidratarListasDesdeBackend
+    hidratarListasDesdeBackend,
   };
 };
