@@ -13,6 +13,7 @@ import com.proyecto.ligerito.model.Usuario;
 import com.proyecto.ligerito.repository.MochilaRepository;
 import com.proyecto.ligerito.repository.UsuarioRepository;
 import com.proyecto.ligerito.dto.MochilaPatchRequest;
+import com.proyecto.ligerito.dto.MochilaPublicaResponse;
 
 /**
  * Servicio que gestiona la lógica de negocio de las mochilas.
@@ -118,4 +119,23 @@ public class MochilaService {
                 guardada.getNombre(),
                 guardada.isEsPublica());
     }
+
+    public List<MochilaPublicaResponse> listarPublicas() {
+    List<Mochila> mochilasPublicas = mochilaRepository.findByEsPublicaTrue();
+
+    return mochilasPublicas.stream()
+            .map(mochila -> {
+                int pesoTotal = mochila.getItemsMochila().stream()
+                        .mapToInt(item -> item.getItemArmario().getPeso() * item.getCantidad())
+                        .sum();
+
+                return new MochilaPublicaResponse(
+                        mochila.getId(),
+                        mochila.getNombre(),
+                        mochila.getUsuario().getNick(),
+                        pesoTotal
+                );
+            })
+            .toList();
+}
 }

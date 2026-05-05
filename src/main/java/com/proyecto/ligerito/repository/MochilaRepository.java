@@ -21,4 +21,6 @@ public interface MochilaRepository extends JpaRepository<Mochila, Long> {
      *         lista vacía si el usuario no tiene ninguna
      */
     List<Mochila> findByUsuarioId(Long usuarioId);
+
+    List<Mochila> findByEsPublicaTrue();
 }

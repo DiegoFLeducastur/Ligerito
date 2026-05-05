@@ -19,6 +19,7 @@ import com.proyecto.ligerito.dto.MochilaCreateRequest;
 import com.proyecto.ligerito.dto.MochilaResponse;
 import com.proyecto.ligerito.service.MochilaService;
 import com.proyecto.ligerito.dto.MochilaPatchRequest;
+import com.proyecto.ligerito.dto.MochilaPublicaResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -57,6 +58,11 @@ public class MochilaController {
             @PathVariable Long id,
             @RequestBody MochilaPatchRequest request) {
         return mochilaService.actualizarParcial(id, request);
+    }
+
+    @GetMapping("/publicas")
+    public List<MochilaPublicaResponse> listarPublicas(){
+        return mochilaService.listarPublicas();
     }
 
 }
