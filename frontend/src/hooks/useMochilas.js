@@ -87,7 +87,7 @@ export const useMochilas = (onArmarioActualizado) => {
           nombre: m.nombre,
           publica: m.esPublica,
           categorias: m.categorias ?? [],
-          objetos: existente?.objetos ?? [],
+          objetos: m.objetos ?? existente?.objetos ?? [],
         };
       }),
     );

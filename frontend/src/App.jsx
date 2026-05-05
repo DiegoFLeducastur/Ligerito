@@ -16,6 +16,12 @@ import {
   createCategoria as createCategoriaApi,
   deleteCategoria as deleteCategoriaApi,
 } from "./services/apiCategorias";
+import {
+  getItemsMochila,
+  createItemMochila as createItemMochilaApi,
+  patchItemMochila as patchItemMochilaApi,
+  deleteItemMochila as deleteItemMochilaApi,
+} from "./services/apiItemMochila";
 
 function App() {
   const [pantallaActual, setPantallaActual] = useState("landing");
@@ -37,32 +43,47 @@ function App() {
   } = useMochilasBackend();
 
   const manejarNuevoItemReal = async (datos) => {
-    // Caso 1: ya viene del armario backend (por ejemplo desde el Sidebar)
-    if (datos.itemArmarioId || datos.id) {
-      manejarNuevoItem(datos);
-      return;
-    }
+    if (!idListaActiva) return;
 
-    // Caso 2: item nuevo creado desde una mochila
     try {
-      const itemCreado = await crearArmario({
-        nombre: datos.nombre,
-        peso: Number(datos.peso),
-        descripcion: datos.descripcion ?? "",
-        enlace: datos.enlace ?? "",
-        usuarioId: usuarioActual.id,
+      const categoriaId = await obtenerCategoriaIdPorNombre(
+        idListaActiva,
+        datos.categoria,
+      );
+
+      let itemArmarioId = datos.itemArmarioId ?? null;
+
+      // Caso 1: el item ya existe en backend porque viene del armario/sidebar
+      if (!itemArmarioId && datos.id) {
+        itemArmarioId = datos.id;
+      }
+
+      // Caso 2: item nuevo creado desde una mochila -> primero crear en armario
+      if (!itemArmarioId) {
+        const itemCreado = await crearArmario({
+          nombre: datos.nombre,
+          peso: Number(datos.peso),
+          descripcion: datos.descripcion ?? "",
+          enlace: datos.enlace ?? "",
+          usuarioId: usuarioActual.id,
+        });
+
+        itemArmarioId = itemCreado.id;
+        await cargarArmario();
+      }
+
+      await createItemMochilaApi({
+        mochilaId: idListaActiva,
+        categoriaId,
+        itemArmarioId,
       });
 
-      manejarNuevoItem({
-        ...itemCreado,
-        itemArmarioId: itemCreado.id,
-        categoria: datos.categoria,
-      });
+      await cargarMochilasConCategorias(usuarioActual.id);
     } catch (error) {
-      console.error("Error creando item en backend:", error);
+      console.error("Error añadiendo item a mochila:", error);
+      alert("No se pudo añadir el item a la mochila");
     }
   };
-
   const eliminarItemArmarioBackend = async (id) => {
     try {
       await eliminarArmario(id);
@@ -89,13 +110,9 @@ function App() {
     mochilaActiva,
     idListaActiva,
     setIdListaActiva,
-    crearNuevaLista,
     borrarLista,
     actualizarNombreLista,
     togglePublica,
-    manejarNuevoItem,
-    cambiarCantidad,
-    eliminarObjeto,
     añadirCategoria,
     eliminarCategoria,
     actualizarEnlaceItem,
@@ -111,10 +128,21 @@ function App() {
     const mochilasConCategorias = await Promise.all(
       mochilas.map(async (mochila) => {
         const categoriasResponse = await getCategorias(mochila.id);
+        const itemsResponse = await getItemsMochila(mochila.id);
 
         return {
           ...mochila,
           categorias: categoriasResponse.map((c) => c.nombre),
+          objetos: itemsResponse.map((item) => ({
+            id: item.id, // id real de ItemMochila
+            itemArmarioId: item.itemArmarioId,
+            nombre: item.nombre,
+            peso: item.peso,
+            descripcion: item.descripcion ?? "",
+            enlace: item.enlace ?? "",
+            categoria: item.categoriaNombre,
+            cant: item.cantidad,
+          })),
         };
       }),
     );
@@ -159,6 +187,49 @@ function App() {
     } catch (error) {
       console.error(error);
       alert("No se pudo eliminar la categoría");
+    }
+  };
+
+  const obtenerCategoriaIdPorNombre = async (mochilaId, nombreCat) => {
+    const categoriasBackend = await getCategorias(mochilaId);
+    const categoria = categoriasBackend.find((c) => c.nombre === nombreCat);
+
+    if (!categoria) {
+      throw new Error("No se encontró la categoría en el servidor");
+    }
+
+    return categoria.id;
+  };
+
+  const cambiarCantidadReal = async (idItemMochila, incremento) => {
+    try {
+      const itemActual = mochilaActiva.objetos.find(
+        (o) => o.id === idItemMochila,
+      );
+      if (!itemActual) return;
+
+      const nuevaCantidad = itemActual.cant + incremento;
+
+      if (nuevaCantidad <= 0) {
+        await deleteItemMochilaApi(idItemMochila);
+      } else {
+        await patchItemMochilaApi(idItemMochila, { cantidad: nuevaCantidad });
+      }
+
+      await cargarMochilasConCategorias(usuarioActual.id);
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo actualizar la cantidad");
+    }
+  };
+
+  const eliminarObjetoReal = async (idItemMochila) => {
+    try {
+      await deleteItemMochilaApi(idItemMochila);
+      await cargarMochilasConCategorias(usuarioActual.id);
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo eliminar el item de la mochila");
     }
   };
 
@@ -300,8 +371,8 @@ function App() {
                 categorias={mochilaActiva.categorias || []}
                 onAñadirCategoria={añadirCategoriaReal}
                 onEliminarCategoria={eliminarCategoriaReal}
-                onCambiarCantidad={cambiarCantidad}
-                onEliminar={eliminarObjeto}
+                onCambiarCantidad={cambiarCantidadReal}
+                onEliminar={eliminarObjetoReal}
                 onNuevoItem={manejarNuevoItemReal}
                 onActualizarEnlace={actualizarEnlaceItem}
                 onActualizarPeso={actualizarPesoItem}
