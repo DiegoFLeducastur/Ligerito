@@ -42,3 +42,13 @@ export const getMochilasPublicas = async () => {
 
   return await response.json();
 };
+
+export const getMochilaPublicaDetalle = async (id) => {
+  const response = await fetch(`${BASE_URL}/publicas/${id}`);
+
+  if (!response.ok) {
+    throw new Error("No se pudo cargar el detalle de la mochila pública");
+  }
+
+  return await response.json();
+};
