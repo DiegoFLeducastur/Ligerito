@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Footer from "../components/Footer";
 import { getMochilasPublicas } from "../services/apiMochilas";
 
 export default function Explorar({ onVolver, onVerDetalle }) {
@@ -25,7 +26,8 @@ export default function Explorar({ onVolver, onVerDetalle }) {
   }, []);
 
   return (
-    <div className="p-10 max-w-5xl mx-auto w-full animate-in fade-in duration-500">
+    <div className="flex flex-col min-h-full w-full animate-in fade-in duration-500">
+      <div className="p-10 max-w-5xl mx-auto w-full flex-1">
       <div className="flex items-center justify-between mb-10">
         <div>
           <h2 className="text-3xl font-black text-slate-800 tracking-tight">
@@ -106,6 +108,8 @@ export default function Explorar({ onVolver, onVerDetalle }) {
           ))}
         </div>
       )}
+      </div>
+      <Footer />
     </div>
   );
 }

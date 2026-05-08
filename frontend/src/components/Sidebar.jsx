@@ -9,6 +9,7 @@ export default function Sidebar({
   inventario = [],
   onAñadirAlInventario,
   onEliminarDelInventario,
+  onIrAPrincipal,
 }) {
   const [busqueda, setBusqueda] = useState("");
   const [mostrandoInput, setMostrandoInput] = useState(false);
@@ -24,12 +25,16 @@ export default function Sidebar({
       className="w-84 bg-slate-800 text-white h-screen flex flex-col shrink-0 shadow-2xl overflow-hidden border-r border-slate-700/50"
       role="complementary"
     >
-      <div className="p-5 pb-3 flex items-center gap-3">
+      <button
+        onClick={onIrAPrincipal}
+        className="p-5 pb-3 flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer w-full text-left"
+        aria-label="Ir a la pantalla principal"
+      >
         <div className="bg-white/10 p-1.5 rounded-lg text-white" aria-hidden="true">
           <span className="material-symbols-outlined text-xl">scale</span>
         </div>
         <h1 className="text-xl font-black tracking-tighter">Ligerito.</h1>
-      </div>
+      </button>
 
       <div className="px-5 mb-3">
         <div className="flex items-center justify-between mb-2 px-1">

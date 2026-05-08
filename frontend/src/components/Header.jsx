@@ -9,6 +9,7 @@ export default function Header({
   onLogout,
   onIrAExplorar,
   onExportarPDF,
+  onIrAConfiguracion,
 }) {
   return (
     <header className="h-16 bg-slate-50/50 backdrop-blur-md border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-10 shrink-0 shadow-sm">
@@ -43,8 +44,16 @@ export default function Header({
             <span className="material-symbols-outlined text-xl">
               picture_as_pdf
             </span>
-          </button>         
+          </button>
           <button
+            onClick={onIrAExplorar}
+            className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-white rounded-md transition-all cursor-pointer"
+            aria-label="Explorar comunidad"
+          >
+            <span className="material-symbols-outlined text-xl">explore</span>
+          </button>
+          <button
+            onClick={onIrAConfiguracion}
             className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-white rounded-md transition-all cursor-pointer"
             aria-label="Configuración"
           >

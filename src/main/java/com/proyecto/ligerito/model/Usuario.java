@@ -30,7 +30,6 @@ public class Usuario {
     private String nick;
     private String email;
 
-    /** Contraseña del usuario almacenada en texto plano. */
     private String password;
 
     /**

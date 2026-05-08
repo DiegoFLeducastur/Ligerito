@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.proyecto.ligerito.dto.LoginRequest;
 import com.proyecto.ligerito.dto.LoginResponse;
@@ -23,9 +24,11 @@ import com.proyecto.ligerito.repository.UsuarioRepository;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -49,7 +52,7 @@ public class UsuarioService {
                 null,
                 request.getNick(),
                 request.getEmail(),
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()),
                 new ArrayList<>(),
                 new ArrayList<>());
 
@@ -64,11 +67,18 @@ public class UsuarioService {
      * @return {@link LoginResponse} con el ID, nick y email del usuario autenticado
      * @throws ResponseStatusException 401 si el email no existe o la contraseña es incorrecta
      */
+    public void eliminarUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+        }
+        usuarioRepository.deleteById(id);
+    }
+
     public LoginResponse loginUsuario(LoginRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales incorrectas"));
 
-        if (!usuario.getPassword().equals(request.getPassword())) {
+        if(!passwordEncoder.matches(request.getPassword(), usuario.getPassword())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales incorrectas");
         }
 

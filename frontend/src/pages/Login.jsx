@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Footer from "../components/Footer";
 import { login } from "../services/apiAuth";
 
 export default function Login({ onLogin, onIrARegistro }) {
@@ -24,7 +25,8 @@ export default function Login({ onLogin, onIrARegistro }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+      <div className="flex-1 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-10 border border-slate-100">
         {/* LOGO Y CABECERA */}
         <div className="flex flex-col items-center mb-10">
@@ -106,6 +108,8 @@ export default function Login({ onLogin, onIrARegistro }) {
           </p>
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

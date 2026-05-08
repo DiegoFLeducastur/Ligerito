@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Footer from "../components/Footer";
 import { register } from '../services/apiAuth';
 
 export default function Registro({ onRegistro, onIrALogin }) {
@@ -23,7 +24,8 @@ export default function Registro({ onRegistro, onIrALogin }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+      <div className="flex-1 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-10 border border-slate-100">
         
         <div className="flex flex-col items-center mb-8">
@@ -104,6 +106,8 @@ export default function Registro({ onRegistro, onIrALogin }) {
           </p>
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

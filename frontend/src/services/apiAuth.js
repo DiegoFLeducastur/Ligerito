@@ -31,3 +31,11 @@ export const login = async (email, password) => {
 
   return res.json();
 };
+
+export const deleteUsuario = async (id) => {
+  const res = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) throw new Error("No se pudo eliminar la cuenta.");
+};

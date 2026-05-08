@@ -8,6 +8,7 @@ import DetalleComunidad from "./pages/DetalleComunidad";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
 import Landing from "./pages/Landing";
+import Configuracion from "./pages/Configuracion";
 import { useMochilas } from "./hooks/useMochilas";
 import { useArmario } from "./hooks/useArmario";
 import { useMochilasBackend } from "./hooks/useMochilasBackend";
@@ -24,6 +25,8 @@ import {
 } from "./services/apiItemMochila";
 import { prepararMochilaPDF } from "./utils/prepararMochilaPDF";
 import { exportarMochilaPDF } from "./utils/exportarMochilaPDF.jsx";
+import { deleteUsuario } from "./services/apiAuth";
+import Footer from "./components/Footer";
 
 function App() {
   const [pantallaActual, setPantallaActual] = useState("landing");
@@ -323,6 +326,7 @@ function App() {
         inventario={armarioBackend}
         onAñadirAlInventario={manejarNuevoItemReal}
         onEliminarDelInventario={eliminarItemArmarioBackend}
+        onIrAPrincipal={() => setPantallaActual("principal")}
       />
 
       <div className="flex-1 flex flex-col overflow-y-auto bg-slate-50">
@@ -345,6 +349,19 @@ function App() {
           />
         )}
 
+        {/* CONFIGURACIÓN */}
+        {pantallaActual === "configuracion" && (
+          <Configuracion
+            usuario={usuarioActual}
+            onVolver={() => setPantallaActual("principal")}
+            onEliminarCuenta={async () => {
+              await deleteUsuario(usuarioActual.id);
+              setUsuarioActual(null);
+              setPantallaActual("landing");
+            }}
+          />
+        )}
+
         {/* VISTA PRINCIPAL (Nuestra Mochila) */}
         {pantallaActual === "principal" && (
           <>
@@ -360,6 +377,7 @@ function App() {
               }}
               onIrAExplorar={() => setPantallaActual("explorar")}
               onExportarPDF={manejarExportarPDF}
+              onIrAConfiguracion={() => setPantallaActual("configuracion")}
             />
 
             <main className="p-6 max-w-4xl mx-auto w-full">
@@ -380,6 +398,7 @@ function App() {
                 onActualizarDescripcion={actualizarDescripcionItem}
               />
             </main>
+            <Footer />
           </>
         )}
       </div>

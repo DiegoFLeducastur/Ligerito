@@ -1,4 +1,5 @@
 import React from "react";
+import Footer from "../components/Footer";
 
 export default function Landing({ onIrLogin, onIrRegistro }) {
   return (
@@ -195,28 +196,7 @@ export default function Landing({ onIrLogin, onIrRegistro }) {
         </section>
       </main>
 
-      <footer className="w-full py-12 bg-slate-50 border-t border-slate-200">
-        <div className="max-w-[1280px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div>
-            <div className="text-xl font-bold text-blue-900">Ligerito</div>
-            <p className="text-xs uppercase tracking-widest text-slate-400 mt-2">
-              Proyecto de organización de mochilas y control de peso.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-6 text-xs uppercase tracking-widest text-slate-500">
-            <a href="#features" className="hover:text-blue-900">
-              Funciones
-            </a>
-            <a href="#mochilas" className="hover:text-blue-900">
-              Mochilas
-            </a>
-            <a href="#comunidad" className="hover:text-blue-900">
-              Comunidad
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

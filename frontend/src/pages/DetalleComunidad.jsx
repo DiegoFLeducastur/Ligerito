@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import Footer from "../components/Footer";
 import ResumenPesos from "../components/ResumenPesos";
 import FilaItem from "../components/FilaItem";
 import { getMochilaPublicaDetalle } from "../services/apiMochilas";
@@ -66,6 +67,7 @@ export default function DetalleComunidad({ mochila, onVolver }) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col animate-in slide-in-from-right duration-300">
+
       <header className="bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-4">
           <button
@@ -160,6 +162,7 @@ export default function DetalleComunidad({ mochila, onVolver }) {
           </>
         )}
       </main>
+      <Footer />
     </div>
   );
 }
