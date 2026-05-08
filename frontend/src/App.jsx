@@ -22,6 +22,8 @@ import {
   patchItemMochila as patchItemMochilaApi,
   deleteItemMochila as deleteItemMochilaApi,
 } from "./services/apiItemMochila";
+import { prepararMochilaPDF } from "./utils/prepararMochilaPDF";
+import { exportarMochilaPDF } from "./utils/exportarMochilaPDF.jsx";
 
 function App() {
   const [pantallaActual, setPantallaActual] = useState("landing");
@@ -192,7 +194,9 @@ function App() {
 
   const cambiarCantidadReal = async (idItemMochila, incremento) => {
     try {
-      const itemActual = mochilaActiva.objetos.find((o) => o.id === idItemMochila);
+      const itemActual = mochilaActiva.objetos.find(
+        (o) => o.id === idItemMochila,
+      );
       if (!itemActual) return;
 
       const nuevaCantidad = itemActual.cant + incremento;
@@ -259,6 +263,17 @@ function App() {
       console.error(error);
       alert("No se pudo cambiar la visibilidad");
     }
+  };
+
+  const manejarExportarPDF = () => {
+    if (!mochilaActiva) return;
+
+    const data = prepararMochilaPDF({
+      mochila: mochilaActiva,
+      usuarioNombre: usuarioActual?.nick,
+    });
+
+    exportarMochilaPDF(data);
   };
 
   // Gestión de sesión
@@ -344,6 +359,7 @@ function App() {
                 setPantallaActual("login");
               }}
               onIrAExplorar={() => setPantallaActual("explorar")}
+              onExportarPDF={manejarExportarPDF}
             />
 
             <main className="p-6 max-w-4xl mx-auto w-full">
