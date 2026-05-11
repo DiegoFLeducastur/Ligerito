@@ -6,7 +6,7 @@ Aplicación web para gestionar el equipaje de actividades de montaña y larga di
 
 **Backend**
 - Java 21 · Spring Boot 4 · Spring Data JPA / Hibernate · Spring Security
-- MySQL 9.0 · Docker
+- MySQL 8+
 
 **Frontend**
 - React 19 · Vite · Tailwind CSS
@@ -14,13 +14,25 @@ Aplicación web para gestionar el equipaje de actividades de montaña y larga di
 ## Arranque rápido
 
 ### Requisitos
-- Docker Desktop
-- Node.js 18+
+- Java JDK 21+
+- Maven 3.9+
+- MySQL 8+ en ejecución local
+- Node.js 18+ (solo para el frontend)
 
-### Backend + Base de datos
+### 1. Configurar MySQL
+
+Crear el usuario y la base de datos (la BD se crea automáticamente al arrancar si el usuario tiene permisos):
+
+```sql
+CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON backpack_db.* TO 'user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### 2. Arrancar el backend
 
 ```bash
-docker compose up --build
+./mvnw spring-boot:run
 ```
 
 | Servicio | URL |
@@ -28,7 +40,9 @@ docker compose up --build
 | API REST | http://localhost:8080 |
 | Swagger UI | http://localhost:8080/swagger-ui.html |
 
-### Frontend
+Hibernate crea las tablas automáticamente al arrancar (`ddl-auto=update`).
+
+### 3. Arrancar el frontend
 
 ```bash
 cd frontend
@@ -37,12 +51,6 @@ npm run dev
 ```
 
 Frontend disponible en: http://localhost:5173
-
-Para detener todos los servicios:
-
-```bash
-docker compose down
-```
 
 ## Estructura del proyecto
 
@@ -58,7 +66,6 @@ ligerito/
 │   └── config/         # Seguridad (Spring Security)
 ├── src/test/           # Tests unitarios (JUnit 5 + Mockito)
 ├── frontend/           # Aplicación React
-├── compose.yaml        # Docker Compose (app + MySQL)
 └── Dockerfile
 ```
 
