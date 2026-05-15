@@ -39,6 +39,7 @@ function App() {
     cargar: cargarArmario,
     crear: crearArmario,
     eliminar: eliminarArmario,
+    actualizarItem: actualizarItemArmario,
   } = useArmario();
 
   const {
@@ -62,7 +63,7 @@ function App() {
     eliminarItemInventario,
     hidratarListasDesdeBackend,
     agregarListaPersistida,
-  } = useMochilas(cargarArmario);
+  } = useMochilas(actualizarItemArmario);
 
   const sincronizarMochilas = async (usuarioId) => {
     const mochilas = await cargarMochilasBackend(usuarioId);

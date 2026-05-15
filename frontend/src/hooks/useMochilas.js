@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { patchItemArmario } from "../services/apiArmario";
 
-export const useMochilas = (onArmarioActualizado) => {
+export const useMochilas = (onActualizarItemArmario) => {
   const [listas, setListas] = useState([]);
 
   const [idListaActiva, setIdListaActiva] = useState(null);
@@ -94,28 +94,25 @@ export const useMochilas = (onArmarioActualizado) => {
   // --- edición global de item ---
 
   const actualizarCampoItem = async (idItem, campo, valor) => {
-    // 1) Actualiza en la mochila activa para que la UI responda al instante
-    setListas((prev) =>
-      prev.map((l) => {
-        if (l.id !== idListaActiva) return l;
-        return {
-          ...l,
-          objetos: l.objetos.map((obj) =>
-            obj.id === idItem ? { ...obj, [campo]: valor } : obj,
-          ),
-        };
-      }),
-    );
-
-    // 2) Buscar el objeto actual dentro de la mochila
     const objActual = mochilaActiva.objetos.find((o) => o.id === idItem);
     if (!objActual) return;
 
-    // 3) Si tiene referencia al backend, parcheamos
+    // Propaga el cambio a todas las mochilas que contengan el mismo ItemArmario
+    setListas((prev) =>
+      prev.map((l) => ({
+        ...l,
+        objetos: l.objetos.map((obj) =>
+          obj.itemArmarioId === objActual.itemArmarioId
+            ? { ...obj, [campo]: valor }
+            : obj,
+        ),
+      })),
+    );
+
     if (objActual.itemArmarioId) {
+      onActualizarItemArmario?.(objActual.itemArmarioId, { [campo]: valor });
       try {
         await patchItemArmario(objActual.itemArmarioId, { [campo]: valor });
-        await onArmarioActualizado?.();
       } catch (error) {
         console.error(`Error actualizando ${campo} en backend:`, error);
       }

@@ -35,5 +35,11 @@ export const useArmario = () => {
     setArmario((prev) => prev.filter((item) => item.id !== id));
   };
 
-  return { armario, loading, error, cargar, crear, eliminar };
+  const actualizarItem = (id, cambios) => {
+    setArmario((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...cambios } : item)),
+    );
+  };
+
+  return { armario, loading, error, cargar, crear, eliminar, actualizarItem };
 };
