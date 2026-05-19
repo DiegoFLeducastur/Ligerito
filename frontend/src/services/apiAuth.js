@@ -1,4 +1,4 @@
-const BASE = "http://localhost:8080/auth";
+const BASE = "/auth";
 
 export const register = async (nick, email, password) => {
   const res = await fetch(`${BASE}/register`, {
@@ -33,7 +33,7 @@ export const login = async (email, password) => {
 };
 
 export const deleteUsuario = async (id) => {
-  const res = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+  const res = await fetch(`/api/usuarios/${id}`, {
     method: "DELETE",
   });
 

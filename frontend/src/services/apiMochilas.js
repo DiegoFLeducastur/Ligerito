@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/mochilas";
+const BASE_URL = "/api/mochilas";
 
 export const getMochilas = async (usuarioId) => {
   const response = await fetch(`${BASE_URL}?usuarioId=${usuarioId}`);

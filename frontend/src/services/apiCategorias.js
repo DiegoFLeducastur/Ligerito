@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/categorias";
+const BASE_URL = "/api/categorias";
 
 export const getCategorias = async (mochilaId) => {
   const response = await fetch(`${BASE_URL}?mochilaId=${mochilaId}`);

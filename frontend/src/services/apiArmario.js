@@ -1,4 +1,4 @@
-const BASE = "http://localhost:8080/api/armario";
+const BASE = "/api/armario";
 
 export const getArmario = async (usuarioId) => {
   const res = await fetch(`${BASE}?usuarioId=${usuarioId}`);
