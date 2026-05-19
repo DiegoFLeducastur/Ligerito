@@ -2,6 +2,10 @@
 
 Aplicación web para gestionar el equipaje de actividades de montaña y larga distancia. Permite crear un inventario personal de artículos, organizarlos en mochilas por actividad, controlar el peso total y compartir configuraciones con la comunidad.
 
+## Demo en producción
+
+**https://ligerito-app-7d4f809a6da7.herokuapp.com**
+
 ## Stack tecnológico
 
 **Backend**
@@ -11,42 +15,51 @@ Aplicación web para gestionar el equipaje de actividades de montaña y larga di
 **Frontend**
 - React 19 · Vite · Tailwind CSS
 
-## Arranque rápido
+## Arranque en local
 
 ### Requisitos
 - Docker Desktop
 - Java JDK 21+
 - Maven 3.9+ (o usar el wrapper `mvnw` incluido)
-- Node.js 18+ (solo para el frontend)
+- Node.js 18+ (solo para desarrollo del frontend)
 
-### 1. Arrancar la base de datos
+### Opción A — Aplicación completa con Docker (recomendado)
 
+Construye el JAR (incluye el frontend automáticamente) y levanta todo con Docker:
+
+```bash
+./mvnw package -DskipTests
+docker compose up
+```
+
+La aplicación estará disponible en **http://localhost:8080**
+
+### Opción B — Modo desarrollo (backend y frontend por separado)
+
+Útil si se quiere hot-reload en el frontend:
+
+**1. Arrancar la base de datos**
 ```bash
 docker compose up db
 ```
 
-MySQL arranca en `localhost:3306`. La base de datos `backpack_db` se crea automáticamente.
-
-### 2. Arrancar el backend
-
+**2. Arrancar el backend**
 ```bash
 ./mvnw spring-boot:run
 ```
 
-| Servicio | URL |
-|---|---|
-| API REST | http://localhost:8080 |
-| Swagger UI | http://localhost:8080/swagger-ui.html |
-
-### 3. Arrancar el frontend
-
+**3. Arrancar el frontend** (en otra terminal)
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend disponible en: http://localhost:5173
+| Servicio | URL |
+|---|---|
+| Aplicación | http://localhost:5173 |
+| API REST | http://localhost:8080 |
+| Swagger UI | http://localhost:8080/swagger-ui.html |
 
 ## Colección Postman
 
