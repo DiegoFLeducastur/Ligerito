@@ -2,6 +2,10 @@
 
 Aplicación web para gestionar el equipaje de actividades de montaña y larga distancia. Permite crear un inventario personal de artículos, organizarlos en mochilas por actividad, controlar el peso total y compartir configuraciones con la comunidad.
 
+## Documentación Ligerito
+
+[Documentación Ligerito](docs/DocumentacionLigerito.pdf)
+
 ## Video presentación en Youtube
 
 **https://youtu.be/P4MLuAbxMQ8**
