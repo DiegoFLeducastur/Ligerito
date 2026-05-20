@@ -4,7 +4,7 @@ Aplicación web para gestionar el equipaje de actividades de montaña y larga di
 
 ## Video presentación en Youtube
 
-https://youtu.be/NWZ1NyCHKs0
+**https://youtu.be/P4MLuAbxMQ8**
 
 ## Demo en producción
 
