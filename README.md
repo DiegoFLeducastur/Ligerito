@@ -4,7 +4,7 @@ Aplicación web para gestionar el equipaje de actividades de montaña y larga di
 
 ## Documentación Ligerito
 
-[Documentación Ligerito](docs/DocumentacionLigerito.pdf)
+[Documentación Ligerito](docs/DocumentacionFinal.pdf)
 
 ## Video presentación en Youtube
 
